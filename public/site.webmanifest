@@ -1,0 +1,17 @@
+{
+  "name": "PNGX - Secure File Steganography",
+  "short_name": "PNGX",
+  "description": "Hide files inside images with AES-256 encryption and blockchain backup",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0a0a0a",
+  "theme_color": "#8051a1",
+  "icons": [
+    {
+      "src": "/assets/pngx-icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

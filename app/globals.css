@@ -1,26 +1,524 @@
 @import "tailwindcss";
+@plugin "tailwindcss-animate";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+@custom-variant dark (&:where(.dark, .dark *));
 
-@theme inline {
+@theme {
+  --font-inter: var(--font-inter);
+
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+
+  --radius-lg: var(--radius);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-sm: calc(var(--radius) - 4px);
+
+  --animate-gradient-x: gradient-x 15s ease infinite;
+
+  @keyframes gradient-x {
+
+    0%,
+    100% {
+      background-size: 200% 200%;
+      background-position: left center;
+    }
+
+    50% {
+      background-size: 200% 200%;
+      background-position: right center;
+    }
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+/*
+  The default theme variables for shadcn/ui.
+  We use CSS variables so they can be easily swapped for dark mode.
+*/
+:root {
+  --background: 240 10% 4%;
+  /* Void Black/Grey */
+  --foreground: 0 0% 98%;
+
+  --card: 240 10% 4%;
+  --card-foreground: 0 0% 98%;
+
+  --popover: 240 10% 4%;
+  --popover-foreground: 0 0% 98%;
+
+  /* Neon Cyan/Violet Accents */
+  --primary: 263 70% 50%;
+  /* Violet-600 */
+  --primary-foreground: 210 40% 98%;
+
+  --secondary: 180 100% 50%;
+  /* Cyan-400 */
+  --secondary-foreground: 222.2 47.4% 11.2%;
+
+  --muted: 240 3.7% 15.9%;
+  --muted-foreground: 240 5% 64.9%;
+
+  --accent: 240 3.7% 15.9%;
+  --accent-foreground: 0 0% 98%;
+
+  --destructive: 0 62.8% 30.6%;
+  --destructive-foreground: 0 0% 98%;
+
+  --border: 240 3.7% 15.9%;
+  --input: 240 3.7% 15.9%;
+  --ring: 263 70% 50%;
+
+  --radius: 0.75rem;
+}
+
+.dark {
+  --background: 240 10% 4%;
+  --foreground: 0 0% 98%;
+
+  --card: 240 10% 4%;
+  --card-foreground: 0 0% 98%;
+
+  --popover: 240 10% 4%;
+  --popover-foreground: 0 0% 98%;
+
+  --primary: 263 70% 50%;
+  --primary-foreground: 210 40% 98%;
+
+  --secondary: 180 100% 50%;
+  --secondary-foreground: 222.2 47.4% 11.2%;
+
+  --muted: 240 3.7% 15.9%;
+  --muted-foreground: 240 5% 64.9%;
+
+  --accent: 240 3.7% 15.9%;
+  --accent-foreground: 0 0% 98%;
+
+  --destructive: 0 62.8% 30.6%;
+  --destructive-foreground: 0 0% 98%;
+
+  --border: 240 3.7% 15.9%;
+  --input: 240 3.7% 15.9%;
+  --ring: 263 70% 50%;
+}
+
+/* Glassmorphism Utilities */
+.glass {
+  background-color: rgba(var(--background), 0.6);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Text Glow Utility */
+.text-glow {
+  text-shadow: 0 0 10px rgba(139, 92, 246, 0.5);
+}
+
+/* RainbowKit Modal z-index fix */
+[data-rk] {
+  --rk-modal-z-index: 99999;
+}
+
+/* Override RainbowKit modal to appear above shadcn dialog */
+[data-rk-portal] {
+  z-index: 99999 !important;
+}
+
+/* Ensure RainbowKit overlays are above everything */
+div[role="dialog"][aria-modal="true"][class*="iekbcc0"] {
+  z-index: 99999 !important;
+}
+
+/* Custom Animation Keyframes */
+@keyframes fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes scale-in {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+@keyframes pulse-glow {
+
+  0%,
+  100% {
+    box-shadow: 0 0 20px rgba(139, 92, 246, 0.3);
+  }
+
+  50% {
+    box-shadow: 0 0 40px rgba(139, 92, 246, 0.5);
+  }
+}
+
+@keyframes bounce-in {
+  0% {
+    opacity: 0;
+    transform: scale(0.3);
+  }
+
+  50% {
+    transform: scale(1.05);
+  }
+
+  70% {
+    transform: scale(0.9);
+  }
+
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Animation Utility Classes */
+.animate-fade-in-up {
+  animation: fade-in-up 0.5s ease-out forwards;
+}
+
+.animate-scale-in {
+  animation: scale-in 0.3s ease-out forwards;
+}
+
+.animate-shimmer {
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+  background-size: 200% 100%;
+  animation: shimmer 2s infinite;
+}
+
+.animate-pulse-glow {
+  animation: pulse-glow 2s ease-in-out infinite;
+}
+
+.animate-bounce-in {
+  animation: bounce-in 0.5s ease-out forwards;
+}
+
+/* Staggered Animation Delays */
+.delay-100 {
+  animation-delay: 100ms;
+}
+
+.delay-200 {
+  animation-delay: 200ms;
+}
+
+.delay-300 {
+  animation-delay: 300ms;
+}
+
+.delay-400 {
+  animation-delay: 400ms;
+}
+
+.delay-500 {
+  animation-delay: 500ms;
+}
+
+/* ReactBits Shine Animation */
+@keyframes shine {
+  0% {
+    background-position: 100%;
+  }
+
+  100% {
+    background-position: -100%;
+  }
+}
+
+.animate-shine {
+  animation: shine 5s linear infinite;
+}
+
+/* ============================================
+   LANDING PAGE DESIGN SYSTEM
+   ============================================ */
+
+/* Smooth Scroll */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Extended Color Tokens for Landing */
+:root {
+  /* Glow Colors */
+  --glow-primary: 263 70% 50%;
+  --glow-secondary: 180 100% 50%;
+  --glow-accent: 150 100% 50%;
+
+  /* Gradient Mesh Colors */
+  --mesh-1: hsl(263, 70%, 30%);
+  --mesh-2: hsl(200, 80%, 25%);
+  --mesh-3: hsl(180, 60%, 20%);
+}
+
+/* Gradient Text Utility */
+.gradient-text {
+  background: linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(var(--secondary)) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.gradient-text-animated {
+  background: linear-gradient(90deg, hsl(var(--primary)), hsl(var(--secondary)), hsl(150, 100%, 50%), hsl(var(--primary)));
+  background-size: 300% 100%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: gradient-shift 8s ease infinite;
+}
+
+@keyframes gradient-shift {
+
+  0%,
+  100% {
+    background-position: 0% 50%;
+  }
+
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+/* Glow Effects */
+.glow-primary {
+  box-shadow: 0 0 20px hsl(var(--glow-primary) / 0.3),
+    0 0 40px hsl(var(--glow-primary) / 0.2),
+    0 0 60px hsl(var(--glow-primary) / 0.1);
+}
+
+.glow-secondary {
+  box-shadow: 0 0 20px hsl(var(--glow-secondary) / 0.3),
+    0 0 40px hsl(var(--glow-secondary) / 0.2),
+    0 0 60px hsl(var(--glow-secondary) / 0.1);
+}
+
+.glow-text-primary {
+  text-shadow: 0 0 10px hsl(var(--glow-primary) / 0.5),
+    0 0 20px hsl(var(--glow-primary) / 0.3),
+    0 0 30px hsl(var(--glow-primary) / 0.2);
+}
+
+.glow-text-secondary {
+  text-shadow: 0 0 10px hsl(var(--glow-secondary) / 0.5),
+    0 0 20px hsl(var(--glow-secondary) / 0.3),
+    0 0 30px hsl(var(--glow-secondary) / 0.2);
+}
+
+/* Glass Card */
+.glass-card {
+  background: hsl(var(--card) / 0.6);
+  backdrop-filter: blur(20px);
+  border: 1px solid hsl(var(--border) / 0.5);
+  border-radius: var(--radius);
+}
+
+.glass-card-hover:hover {
+  background: hsl(var(--card) / 0.8);
+  border-color: hsl(var(--primary) / 0.3);
+  box-shadow: 0 0 30px hsl(var(--primary) / 0.1);
+}
+
+/* Animated Border Gradient */
+.border-gradient {
+  position: relative;
+  background: hsl(var(--card));
+  border-radius: var(--radius);
+}
+
+.border-gradient::before {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  border-radius: calc(var(--radius) + 1px);
+  background: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--secondary)));
+  z-index: -1;
+  opacity: 0.5;
+}
+
+/* Grid Background Pattern */
+.grid-pattern {
+  background-image:
+    linear-gradient(hsl(var(--border) / 0.3) 1px, transparent 1px),
+    linear-gradient(90deg, hsl(var(--border) / 0.3) 1px, transparent 1px);
+  background-size: 50px 50px;
+}
+
+/* Noise Texture Overlay */
+.noise-overlay::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+  opacity: 0.03;
+  pointer-events: none;
+}
+
+/* Section Spacing */
+.section-padding {
+  padding-top: clamp(4rem, 10vh, 8rem);
+  padding-bottom: clamp(4rem, 10vh, 8rem);
+}
+
+/* Animated Underline */
+.animated-underline {
+  position: relative;
+}
+
+.animated-underline::after {
+  content: '';
+  position: absolute;
+  bottom: -4px;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: linear-gradient(90deg, hsl(var(--primary)), hsl(var(--secondary)));
+  transition: width 0.3s ease;
+}
+
+.animated-underline:hover::after {
+  width: 100%;
+}
+
+/* Floating Animation */
+@keyframes float {
+
+  0%,
+  100% {
+    transform: translateY(0px);
+  }
+
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
+/* Pulse Ring Animation */
+@keyframes pulse-ring {
+  0% {
+    transform: scale(1);
+    opacity: 0.5;
+  }
+
+  100% {
+    transform: scale(1.5);
+    opacity: 0;
+  }
+}
+
+.pulse-ring::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  border: 2px solid hsl(var(--primary));
+  animation: pulse-ring 2s ease-out infinite;
+}
+
+/* Scroll Indicator */
+@keyframes scroll-indicator {
+
+  0%,
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+
+  50% {
+    transform: translateY(8px);
+    opacity: 0.5;
+  }
+}
+
+.animate-scroll-indicator {
+  animation: scroll-indicator 2s ease-in-out infinite;
+}
+
+/* Reveal on Scroll - Initial State */
+.reveal-on-scroll {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+.reveal-on-scroll.revealed {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Stagger delays for reveal */
+.reveal-delay-1 {
+  transition-delay: 0.1s;
+}
+
+.reveal-delay-2 {
+  transition-delay: 0.2s;
+}
+
+.reveal-delay-3 {
+  transition-delay: 0.3s;
+}
+
+.reveal-delay-4 {
+  transition-delay: 0.4s;
+}
+
+.reveal-delay-5 {
+  transition-delay: 0.5s;
+}
+
+.reveal-delay-6 {
+  transition-delay: 0.6s;
 }

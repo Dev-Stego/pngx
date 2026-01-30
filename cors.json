@@ -1,0 +1,23 @@
+[
+    {
+        "origin": [
+            "http://localhost:3000",
+            "https://pngx.web.app",
+            "https://pngx.firebaseapp.com"
+        ],
+        "method": [
+            "GET",
+            "HEAD",
+            "PUT",
+            "POST",
+            "DELETE"
+        ],
+        "maxAgeSeconds": 3600,
+        "responseHeader": [
+            "Content-Type",
+            "Content-Length",
+            "Content-Disposition",
+            "Access-Control-Allow-Origin"
+        ]
+    }
+]
