@@ -57,7 +57,7 @@ export async function uploadFile(
         });
 
         if (!uploadResponse.ok) {
-            throw new Error(`S3 upload failed: ${uploadResponse.status} ${uploadResponse.statusText}`);
+            throw new Error(`Upload to secure storage failed: ${uploadResponse.status}`);
         }
 
         return {
@@ -71,7 +71,7 @@ export async function uploadFile(
             },
         };
     } catch (error) {
-        console.error('Error uploading file to S3:', error);
+        console.error('Error uploading to secure storage:', error);
         throw error;
     }
 }

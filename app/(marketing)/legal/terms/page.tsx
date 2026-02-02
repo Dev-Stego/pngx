@@ -54,7 +54,18 @@ export default function TermsPage() {
                             <strong>There is no "Forgot Password" feature.</strong> If you lose your encryption key, your data is mathematically unrecoverable. We cannot help you retrieve it because we do not have your keys.
                         </p>
 
-                        <h2>5. Updates to Terms</h2>
+                        <h2>5. Blockchain & Cryptocurrency</h2>
+                        <p>
+                            If you use blockchain backup features:
+                        </p>
+                        <ul>
+                            <li>You are solely responsible for your wallet security and private keys.</li>
+                            <li>Blockchain transactions are irreversible. Gas fees are non-refundable.</li>
+                            <li>We do not provide financial advice. Any tokens or NFTs are utility-only.</li>
+                            <li>You agree to comply with all applicable laws in your jurisdiction regarding cryptocurrency.</li>
+                        </ul>
+
+                        <h2>6. Updates to Terms</h2>
                         <p>
                             We reserve the right to modify these terms at any time. Continued use of the service constitutes acceptance of the new terms.
                         </p>

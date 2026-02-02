@@ -1,11 +1,28 @@
-
 import { NextResponse } from 'next/server';
-import { adminAuth, adminDb } from '@/lib/firebase/admin';
 import { verifyMessage } from 'ethers';
-import { Timestamp } from 'firebase-admin/firestore';
+import { 
+    createCustomToken, 
+    createUser, 
+    getDocument, 
+    setDocument, 
+    updateDocument,
+    serverTimestamp 
+} from '@/lib/firebase/admin-rest';
 
 export async function POST(req: Request) {
     try {
+        // Check for required environment variables first
+        const requiredVars = ['FIREBASE_ADMIN_PROJECT_ID', 'FIREBASE_ADMIN_CLIENT_EMAIL', 'FIREBASE_ADMIN_PRIVATE_KEY'];
+        const missingVars = requiredVars.filter(v => !process.env[v]);
+        
+        if (missingVars.length > 0) {
+            console.error('[WalletAuth] Missing env vars:', missingVars);
+            return NextResponse.json({ 
+                error: 'Server configuration error',
+                message: `Missing environment variables: ${missingVars.join(', ')}`,
+            }, { status: 500 });
+        }
+
         const { address, signature, message } = await req.json();
 
         if (!address || !signature || !message) {
@@ -31,26 +48,26 @@ export async function POST(req: Request) {
         console.log(`[WalletAuth] Verified signature for ${walletAddress}`);
 
         // 2. Check if wallet is already linked to a user
-        const walletDoc = await adminDb.collection('wallets').doc(walletAddress).get();
+        const walletData = await getDocument('wallets', walletAddress);
 
         let uid: string;
         let isNewUser = false;
 
-        if (walletDoc.exists) {
+        if (walletData) {
             // Existing user
-            uid = walletDoc.data()?.uid;
+            uid = walletData.uid;
             console.log(`[WalletAuth] Wallet ${walletAddress} linked to existing user ${uid}`);
 
             // Ensure user document exists (fix for "ghost" users)
-            const userDoc = await adminDb.collection('users').doc(uid).get();
-            if (!userDoc.exists) {
+            const userData = await getDocument('users', uid);
+            if (!userData) {
                 console.log(`[WalletAuth] User profile missing for ${uid}, recreating...`);
-                await adminDb.collection('users').doc(uid).set({
+                await setDocument('users', uid, {
                     uid,
                     displayName: `${walletAddress.slice(0, 6)}...${walletAddress.slice(-4)}`,
                     walletAddress: walletAddress,
-                    createdAt: Timestamp.now(),
-                    lastLogin: Timestamp.now(),
+                    createdAt: serverTimestamp(),
+                    lastLogin: serverTimestamp(),
                     isPremium: false,
                     filesEncrypted: 0,
                     storageUsed: 0,
@@ -59,8 +76,8 @@ export async function POST(req: Request) {
                 });
             } else {
                 // Update last login
-                await adminDb.collection('users').doc(uid).update({
-                    lastLogin: Timestamp.now()
+                await updateDocument('users', uid, {
+                    lastLogin: serverTimestamp()
                 });
             }
 
@@ -68,29 +85,27 @@ export async function POST(req: Request) {
             // New user
             console.log(`[WalletAuth] New wallet ${walletAddress}, creating new user`);
 
-            // Create a new anonymous UID equivalent
-            // We can ask Firebase to create a user for us, or just generate a UID and custom token
-            // Using createCustomToken with a new ID works, but let's create a formal user record
-            const newUser = await adminAuth.createUser({
-                displayName: `${walletAddress.slice(0, 6)}...${walletAddress.slice(-4)}`
-            });
+            // Create a new user in Firebase Auth
+            const newUser = await createUser(
+                `${walletAddress.slice(0, 6)}...${walletAddress.slice(-4)}`
+            );
             uid = newUser.uid;
             isNewUser = true;
 
             // Link wallet
-            await adminDb.collection('wallets').doc(walletAddress).set({
+            await setDocument('wallets', walletAddress, {
                 uid,
                 address: walletAddress,
-                linkedAt: Timestamp.now()
+                linkedAt: serverTimestamp()
             });
 
             // Create Profile
-            await adminDb.collection('users').doc(uid).set({
+            await setDocument('users', uid, {
                 uid,
                 displayName: `${walletAddress.slice(0, 6)}...${walletAddress.slice(-4)}`,
                 walletAddress: walletAddress,
-                createdAt: Timestamp.now(),
-                lastLogin: Timestamp.now(),
+                createdAt: serverTimestamp(),
+                lastLogin: serverTimestamp(),
                 isPremium: false,
                 filesEncrypted: 0,
                 storageUsed: 0,
@@ -100,7 +115,7 @@ export async function POST(req: Request) {
         }
 
         // 3. Generate Custom Token
-        const customToken = await adminAuth.createCustomToken(uid);
+        const customToken = await createCustomToken(uid);
 
         return NextResponse.json({
             token: customToken,
@@ -110,6 +125,10 @@ export async function POST(req: Request) {
 
     } catch (error: any) {
         console.error('[WalletAuth] Error:', error);
-        return NextResponse.json({ error: error.message || 'Internal Server Error' }, { status: 500 });
+        return NextResponse.json({ 
+            error: error.message || 'Internal Server Error',
+            code: error.code,
+            details: process.env.NODE_ENV === 'development' ? error.stack : undefined
+        }, { status: 500 });
     }
 }

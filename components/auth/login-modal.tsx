@@ -115,17 +115,20 @@ export function LoginModal({ open, onOpenChange }: LoginModalProps) {
         setLoading(true);
 
         // Show a toast to indicate signing is happening
-        const toastId = toast.loading('Please sign the message in your wallet...');
+        let toastId = toast.loading('Please sign the message in your wallet...');
 
         try {
             const message = `Welcome to PNGX!\n\nSign this message to authenticate.\n\nWallet: ${address}\nTimestamp: ${new Date().toISOString()}`;
             const signature = await signMessageAsync({ message });
 
+            // Update toast for server authentication phase
             toast.dismiss(toastId);
+            toastId = toast.loading('Authenticating with server...');
 
             // Create Firebase session with wallet
             await signInWithWallet(address, signature, message);
 
+            toast.dismiss(toastId);
             toast.success('Wallet authenticated successfully!');
             handleSuccess();
         } catch (error: any) {

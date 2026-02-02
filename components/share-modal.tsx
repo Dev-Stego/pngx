@@ -63,7 +63,7 @@ export function ShareModal({ isOpen, onClose, fileData }: ShareModalProps) {
                 downloadUrl = uploadResult.downloadUrl;
             } catch (uploadError) {
                 console.error('Upload failed:', uploadError);
-                toast.error('Failed to upload file for sharing');
+                toast.error('Failed to save file for sharing');
                 setIsLoading(false);
                 return;
             }

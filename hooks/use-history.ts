@@ -64,7 +64,7 @@ export function useHistory() {
 
                 // If we have a blobUrl but no cloud URL, we need to upload
                 if (!downloadUrl && item.blobUrl) {
-                    const toastId = toast.loading('Syncing file to cloud...');
+                    const toastId = toast.loading('Saving to secure storage...');
                     try {
                         const response = await fetch(item.blobUrl);
                         const blob = await response.blob();
@@ -77,9 +77,9 @@ export function useHistory() {
                         // Update size with actual uploaded size (often changed by metadata/headers)
                         item.fileSize = uploadResult.metadata.size;
 
-                        toast.success('File synced!', { id: toastId });
+                        toast.success('File saved!', { id: toastId });
                     } catch (e) {
-                        toast.error('Failed to sync file to cloud', { id: toastId });
+                        toast.error('Failed to save file', { id: toastId });
                         // We continue adding to history, but without the file (metadata only)
                         // Or should we fail? Better to save metadata at least.
                         console.error('Upload error in addHistoryItem:', e);

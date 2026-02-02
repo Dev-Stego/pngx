@@ -168,7 +168,7 @@ export function HistoryPanel() {
                                                 </div>
 
                                                 <div className="flex items-center gap-1 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity">
-                                                    {item.downloadUrl && (
+                                                    {(item.downloadUrl || item.storagePath) && (
                                                         <Button
                                                             variant="ghost"
                                                             size="icon"

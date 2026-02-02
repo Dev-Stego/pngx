@@ -165,9 +165,9 @@ function VerifyContent() {
                 setStatus('success');
                 toast.success('Successfully signed in!');
 
-                // Redirect after short delay
+                // Redirect to app after short delay
                 setTimeout(() => {
-                    router.push('/');
+                    router.push('/app');
                 }, 2000);
             } catch (error: any) {
                 console.error('[Verify] Sign-in error:', error);
@@ -249,7 +249,7 @@ function VerifyContent() {
                         </div>
                         <div className="flex items-center justify-center gap-2 text-sm text-muted-foreground">
                             <Loader2 className="w-4 h-4 animate-spin" />
-                            <span>Redirecting to {isLinkMode ? 'profile' : 'home'}...</span>
+                            <span>Redirecting to {isLinkMode ? 'profile' : 'app'}...</span>
                         </div>
                     </div>
                 )}

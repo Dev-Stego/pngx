@@ -23,7 +23,7 @@ export interface EncodingResult extends BaseEncodingResult {
 }
 import { ShareModal } from '@/components/share-modal';
 import { generateSecurityNote, createNoteFile, downloadNoteFile, copyToClipboard, type GeneratedNote } from '@/lib/crypto/note-generator';
-import { Download, ShieldCheck, RefreshCw, X, Copy, FileText, Share2, Lock, HelpCircle, Info, Unlock } from 'lucide-react';
+import { Download, ShieldCheck, RefreshCw, X, Copy, FileDown, Share2, Lock, HelpCircle, Info, Unlock } from 'lucide-react';
 import { formatBytes, cn } from '@/lib/utils';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAccount, useSignMessage, useWriteContract, useWaitForTransactionReceipt } from 'wagmi';
@@ -423,7 +423,7 @@ export function SecureProcessor() {
                                                             <Copy className="w-4 h-4" />
                                                         </Button>
                                                         <Button variant="ghost" size="icon" className="h-8 w-8" onClick={handleDownloadNote} title="Download Note">
-                                                            <FileText className="w-4 h-4" />
+                                                            <FileDown className="w-4 h-4" />
                                                         </Button>
                                                     </div>
                                                 </div>
